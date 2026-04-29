@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Kalam, Patrick_Hand } from "next/font/google";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const kalam = Kalam({
@@ -60,7 +62,11 @@ export default function RootLayout({
       lang="en"
       className={`${kalam.variable} ${patrickHand.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col text-foreground">{children}</body>
+      <body className="min-h-full flex flex-col text-foreground">
+        {children}
+        <Analytics />
+        <SpeedInsights />
+      </body>
     </html>
   );
 }
