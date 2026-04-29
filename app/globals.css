@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fdfbf7;
+  --foreground: #2d2d2d;
+  --muted: #e5e0d8;
+  --accent: #ff4d4d;
+  --border: #2d2d2d;
+  --secondary-accent: #2d5da1;
+  --wobbly: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  --wobbly-md: 45px 255px 35px 255px / 255px 35px 225px 45px;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-border: var(--border);
+  --color-secondary-accent: var(--secondary-accent);
+  --font-sans: var(--font-patrick-hand);
+  --font-heading: var(--font-kalam);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-patrick-hand), cursive;
+  background-image: radial-gradient(var(--muted) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-kalam), cursive;
+}
+
+.wobbly {
+  border-radius: var(--wobbly);
+}
+
+.wobbly-md {
+  border-radius: var(--wobbly-md);
+}
+
+.hard-shadow {
+  box-shadow: 4px 4px 0 0 var(--border);
+}
+
+.hard-shadow-lg {
+  box-shadow: 8px 8px 0 0 var(--border);
+}
