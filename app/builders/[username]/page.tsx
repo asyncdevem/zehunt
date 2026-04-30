@@ -1,9 +1,22 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { Activity, Award, ChartNoAxesCombined, Flame, UserRoundSearch } from 'lucide-react';
+import { Activity, ArrowRight, Award, ChartNoAxesCombined, Flame, Package, UserRoundSearch } from 'lucide-react';
 import { PlatformShell } from '@/app/components/platform-shell';
 import { RoughPill, StickyLabel, WobblyCard } from '@/app/components/handdrawn';
 import { builders, opportunities, updates } from '@/app/lib/platform-data';
+
+const builderProducts: Record<string, { id: string; name: string; tagline: string; stage: string }[]> = {
+  ayeshabuilds: [
+    { id: 'flowpilot', name: 'FlowPilot', tagline: 'AI workflow engine for startup ops teams.', stage: 'GROWTH' },
+  ],
+  rohanexec: [
+    { id: 'dockit', name: 'Dockit Core', tagline: 'API reliability and deployment health toolkit.', stage: 'BETA' },
+  ],
+  minaforward: [
+    { id: 'pulsedesk', name: 'PulseDesk', tagline: 'Automation workspace for support and retention loops.', stage: 'BETA' },
+  ],
+};
 
 export default async function BuilderProfilePage({ params }: { params: Promise<{ username: string }> }) {
   const { username } = await params;
@@ -15,11 +28,12 @@ export default async function BuilderProfilePage({ params }: { params: Promise<{
 
   const builderUpdates = updates.filter((item) => item.builderUsername === builder.username);
   const builderOpportunities = opportunities.filter((item) => item.builderUsername === builder.username);
+  const products = builderProducts[builder.username] ?? [];
 
   return (
     <PlatformShell
       title={`${builder.name} (@${builder.username})`}
-      subtitle="Execution timeline, reputation components, and unlocked opportunities."
+      subtitle="Progress, achievements, and opportunities."
     >
       <div className="mb-6 flex flex-wrap items-center gap-3">
         <StickyLabel>Builder Profile</StickyLabel>
@@ -74,7 +88,7 @@ export default async function BuilderProfilePage({ params }: { params: Promise<{
 
         <div className="space-y-4">
           <WobblyCard className="bg-[#fff9c4]" rotate={1}>
-            <h3 className="text-2xl font-extrabold">Recent Structured Updates</h3>
+            <h3 className="text-2xl font-extrabold">Recent Updates</h3>
             <div className="mt-3 space-y-3">
               {builderUpdates.map((item) => (
                 <article
@@ -90,6 +104,35 @@ export default async function BuilderProfilePage({ params }: { params: Promise<{
                   </div>
                 </article>
               ))}
+            </div>
+          </WobblyCard>
+
+          <WobblyCard className="bg-[#fdfbf7]" rotate={1}>
+            <div className="inline-flex items-center gap-2">
+              <Package className="h-5 w-5 text-[#2d5da1]" strokeWidth={2.8} />
+              <h3 className="text-2xl font-extrabold">Products</h3>
+            </div>
+            <div className="mt-3 space-y-2">
+              {products.map((product) => (
+                <Link
+                  key={product.id}
+                  href={`/products/${product.id}`}
+                  className="flex items-center justify-between border-[2px] border-dashed border-[#2d2d2d] bg-white px-3 py-2 transition-colors hover:bg-[#fff9c4]"
+                  style={{ borderRadius: '59% 41% 55% 45% / 38% 61% 39% 62%' }}
+                >
+                  <div>
+                    <p className="text-lg font-extrabold">{product.name}</p>
+                    <p className="text-sm">{product.tagline}</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <RoughPill>{product.stage}</RoughPill>
+                    <ArrowRight className="h-4 w-4 text-[#2d5da1]" strokeWidth={2.8} />
+                  </div>
+                </Link>
+              ))}
+              {products.length === 0 && (
+                <p className="text-base text-[#2d2d2d]/60">No products registered yet.</p>
+              )}
             </div>
           </WobblyCard>
 

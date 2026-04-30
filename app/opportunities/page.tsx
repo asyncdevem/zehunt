@@ -13,13 +13,13 @@ function iconForType(type: string) {
 export default function OpportunitiesPage() {
   return (
     <PlatformShell
-      title="Opportunity Engine"
-      subtitle="Builder reputation is converted into real hiring, collaboration, and funding opportunities."
+      title="Opportunities"
+      subtitle="Your progress unlocks real opportunities for hiring, collaboration, and funding."
     >
       <div className="mb-6 flex flex-wrap items-center gap-3">
         <StickyLabel>Live Matches</StickyLabel>
-        <RoughPill>Skills Graph + Activity</RoughPill>
-        <RoughPill>Stage Maturity Signals</RoughPill>
+        <RoughPill>Skills &amp; Activity</RoughPill>
+        <RoughPill>Your Progress Level</RoughPill>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">

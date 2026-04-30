@@ -12,13 +12,13 @@ const rankingLanes = [
   },
   {
     title: 'Consistent Builders',
-    hint: '30-day execution rhythm',
+    hint: '30-day consistency',
     icon: CalendarClock,
     score: (b: (typeof builders)[number]) => b.consistency,
   },
   {
     title: 'Breakout Builders',
-    hint: 'velocity spike + outcomes',
+    hint: 'rapid growth + results',
     icon: Flame,
     score: (b: (typeof builders)[number]) => b.outcomes + b.execution,
   },
@@ -27,12 +27,12 @@ const rankingLanes = [
 export default function RankingsPage() {
   return (
     <PlatformShell
-      title="Execution Rankings"
-      subtitle="Replace trending products with builder-first leaderboards powered by reputation signals."
+      title="Builder Rankings"
+      subtitle="See top builders ranked by real progress, not hype."
     >
       <div className="mb-6 flex flex-wrap items-center gap-3">
-        <StickyLabel>Builder-Centric Rankings</StickyLabel>
-        <RoughPill>No vote-based trending</RoughPill>
+        <StickyLabel>Builder Rankings</StickyLabel>
+        <RoughPill>No popularity contests</RoughPill>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
@@ -73,7 +73,7 @@ export default function RankingsPage() {
           <h3 className="text-2xl font-extrabold">Platform Principle</h3>
         </div>
         <p className="mt-2 text-lg">
-          Leaderboards reflect real execution maturity and growth, not social hype loops.
+          Rankings show real progress and growth, not social hype.
         </p>
       </WobblyCard>
     </PlatformShell>

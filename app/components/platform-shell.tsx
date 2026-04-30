@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
+import { Bell, Search } from 'lucide-react';
 import { WobblyButton } from '@/app/components/handdrawn';
 
 const navItems = [
@@ -10,7 +11,7 @@ const navItems = [
   { href: '/products', label: 'Products' },
   { href: '/feed', label: 'Feed' },
   { href: '/opportunities', label: 'Opportunities' },
-  { href: '/admin', label: 'Admin' },
+  { href: '/community', label: 'Community' },
 ];
 
 export function PlatformShell({
@@ -46,9 +47,27 @@ export function PlatformShell({
               </Link>
             ))}
           </nav>
-          <Link href="/updates/new" className="inline-flex">
-            <WobblyButton className="text-base">Create Update</WobblyButton>
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/search"
+              className="inline-flex h-10 w-10 items-center justify-center border-[2px] border-[#2d2d2d] bg-white transition-all duration-100 hover:bg-[#2d5da1] hover:text-white"
+              style={{ borderRadius: '54% 46% 62% 38% / 38% 56% 44% 62%' }}
+              aria-label="Search"
+            >
+              <Search className="h-4 w-4" strokeWidth={2.8} />
+            </Link>
+            <Link
+              href="/notifications"
+              className="inline-flex h-10 w-10 items-center justify-center border-[2px] border-[#2d2d2d] bg-white transition-all duration-100 hover:bg-[#ff4d4d] hover:text-white"
+              style={{ borderRadius: '54% 46% 62% 38% / 38% 56% 44% 62%' }}
+              aria-label="Notifications"
+            >
+              <Bell className="h-4 w-4" strokeWidth={2.8} />
+            </Link>
+            <Link href="/updates/new" className="inline-flex">
+              <WobblyButton className="text-base">Create Update</WobblyButton>
+            </Link>
+          </div>
         </div>
       </header>
 

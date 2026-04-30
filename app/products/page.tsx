@@ -30,12 +30,12 @@ const products = [
 export default function ProductsPage() {
   return (
     <PlatformShell
-      title="Products (Evidence Layer)"
-      subtitle="Products are secondary artifacts that prove execution progression for each builder profile."
+      title="Products"
+      subtitle="See what builders are creating. Each product tracks progress from idea to growth."
     >
       <div className="mb-6 flex flex-wrap items-center gap-3">
-        <StickyLabel>Secondary Surface</StickyLabel>
-        <RoughPill>Builder-linked</RoughPill>
+        <StickyLabel>All Products</StickyLabel>
+        <RoughPill>By builders</RoughPill>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

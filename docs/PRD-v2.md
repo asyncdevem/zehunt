@@ -1,400 +1,261 @@
-# ZE HUNT - Product Requirements Document (PRD v2)
+<h1 align="center">Zehunt — Product Requirements Document</h1>
+<p align="center"><strong>Version 2.0</strong> · April 2026 · Beta Release</p>
+
+---
 
 ## 1. Product Overview
 
 ### 1.1 Vision
-Zehunt is a builder intelligence and reputation graph that tracks how builders grow over time through real execution, not popularity.
 
-It transforms:
+Zehunt is a builder reputation and growth system that tracks how builders grow over time through real execution — not popularity, votes, or hype.
 
-building activity -> measurable reputation -> real-world opportunities
+```
+Building Activity → Measurable Reputation → Real-World Opportunities
+```
 
 ### 1.2 Mission
-To create a system where builders earn reputation through consistent execution and convert that reputation into opportunities such as hiring, collaboration, and funding.
 
-### 1.3 Core Positioning
-Zehunt is:
+Create a system where builders earn reputation through consistent execution and convert that reputation into tangible opportunities: hiring, collaboration, and funding.
+
+### 1.3 Positioning
+
+**Zehunt is:**
 - A builder reputation and growth system
 
-Zehunt is NOT:
+**Zehunt is not:**
 - A product launch platform
 - A voting-based discovery site
 - A hype-driven showcase
 
-## 2. Core Value Proposition
+---
+
+## 2. Value Proposition
 
 ### For Builders
-- Build in public with structure
-- Track real growth over time
-- Earn measurable reputation
-- Unlock job, funding, and collaboration opportunities
 
-### For Ecosystem
-- Discover high-signal builders (not just products)
-- Track real execution ability
-- Identify emerging talent early
-- Reduce noise from hype-based platforms
+| Benefit | Description |
+|---|---|
+| Build in public | Share structured progress updates, not social posts |
+| Track growth | Measurable reputation score based on real execution |
+| Earn reputation | Consistency, shipping, and engagement compound over time |
+| Unlock opportunities | Hiring, funding, and collaboration matched to your track record |
 
-## 3. System Architecture (High Level)
+### For the Ecosystem
 
-### Frontend
-- Next.js (App Router)
-- Tailwind CSS
-- React Query / Zustand
+| Benefit | Description |
+|---|---|
+| Discover talent | Find high-signal builders based on execution, not followers |
+| Track ability | See real shipping cadence, lifecycle progression, and consistency |
+| Identify early | Spot emerging talent before they're widely known |
+| Reduce noise | Filter out hype-driven platforms and vanity metrics |
 
-### Backend
-- Node.js (NestJS or Express)
-- PostgreSQL
-- Prisma ORM
+---
 
-### Event System (Core Engine)
-- Unified Builder Event Stream
+## 3. System Architecture
 
-### Realtime
-- WebSockets / Supabase Realtime
+### 3.1 High-Level Stack
 
-### Storage
-- Cloudflare R2 / Supabase Storage
+| Layer | Technology | Purpose |
+|---|---|---|
+| Frontend | Next.js (App Router), Tailwind CSS | UI and server-side rendering |
+| Backend | Next.js Route Handlers + Server Actions | API endpoints and mutations |
+| Database | Supabase (PostgreSQL) | Data storage, auth, realtime |
+| Auth | Supabase Auth | OAuth (GitHub, Google) + email/password |
+| Realtime | Supabase Realtime | Live feed, notifications, score updates |
+| Storage | Supabase Storage | Avatars, logos, media |
+| Hosting | Vercel | Deployment, CDN, edge network |
+| Scheduling | Supabase pg_cron | Score recalculation, ranking snapshots |
 
-### MCP Integration Layer
-- Zehunt MCP Server (Model Context Protocol)
-- OAuth/API key based authentication for MCP clients
-- Scoped tools for reading builder profiles, rankings, updates, and opportunities
-- Write tools for posting structured updates and lifecycle changes (with validation)
+### 3.2 MCP Integration Layer (Future)
+
+| Capability | Description |
+|---|---|
+| Read tools | Builder profiles, scores, rankings, feed updates, opportunities |
+| Write tools | Structured updates, lifecycle stage transitions |
+| Access model | Personal tokens, team connections, scoped permissions |
+| Safety | Schema validation, rate limiting, audit logs, role-based access |
+
+---
 
 ## 4. Core System Design
 
-### 4.1 Builder System (Core Entity)
-Concept:
-Builder is the root entity of the entire system. Everything flows from builder activity.
+### 4.1 Builder System
 
-Schema:
-```sql
-builders (
-  id,
-  name,
-  username,
-  bio,
-  avatar_url,
-  github_url,
-  linkedin_url,
-  created_at
-)
-```
+The builder is the root entity. Everything flows from builder activity.
 
-Builder Attributes:
-- Identity
-- Skills / tech stack
-- Activity history
-- Reputation score (computed)
+**Attributes:** Identity, skills/tech stack, activity history, reputation score (computed), role (builder/investor/recruiter).
 
-### 4.2 Builder Event System (CORE ENGINE)
-Concept:
-All activity is unified into a single event stream.
+### 4.2 Builder Event System
 
-Schema:
-```sql
-builder_events (
-  id,
-  builder_id,
-  type,
-  entity_id,
-  metadata JSONB,
-  created_at
-)
-```
+All activity is unified into a single, append-only event stream. This is the single source of truth for scoring, ranking, and analytics.
 
-Event Types:
-- PRODUCT_CREATED
-- PRODUCT_UPDATED
-- STAGE_CHANGED
-- POST_CREATED
-- COMMENT_RECEIVED
-- FOLLOWED
-- LAUNCHED
-- OPPORTUNITY_UNLOCKED
+**Event types:** `product_created`, `product_updated`, `stage_changed`, `update_posted`, `comment_received`, `followed`, `opportunity_unlocked`, `score_milestone`, `team_joined`, `team_invited`, `member_removed`
 
-Purpose:
-- Single source of truth for growth
-- Enables scoring, ranking, and analytics
+### 4.3 Product System
 
-### 4.3 Product System (Evidence Layer)
-Concept:
-Products are NOT the main entity. They are evidence of builder execution.
+Products are not the main entity — they are evidence of builder execution. Each product tracks lifecycle stages and feeds the builder's reputation score.
 
-Schema:
-```sql
-products (
-  id,
-  builder_id,
-  name,
-  tagline,
-  description,
-  website_url,
-  logo_url,
-  created_at
-)
-```
+**Stages:** Idea → MVP → Beta → Growth
 
-### 4.4 Product Lifecycle System (Key Differentiator)
-Stages:
-- IDEA
-- MVP
-- BETA
-- GROWTH
+### 4.4 Reputation System
 
-Schema:
-```sql
-product_lifecycle (
-  id,
-  product_id,
-  stage,
-  updated_at
-)
-```
-
-Purpose:
-- Tracks execution maturity
-- Feeds builder score
-- Enables progression visibility
-
-### 4.5 Builder Reputation System (CORE ENGINE)
-Concept:
 Reputation replaces votes as the core ranking mechanism.
 
-Builder Score Formula:
+| Component | Weight | Signals |
+|---|---|---|
+| Consistency | 30% | Active days per week, update frequency, streaks |
+| Execution | 25% | Stage progression, shipped features, lifecycle transitions |
+| Engagement Quality | 20% | Meaningful comments, thread depth, feedback received |
+| Outcome Signals | 15% | Hiring, collaboration, funding interest |
+| Social Proof | 10% | Followers, reactions (low weight) |
 
-Builder Score =
-(Consistency x 30%) +
-(Execution x 25%) +
-(Engagement Quality x 20%) +
-(Outcome Signals x 15%) +
-(Social Proof x 10%)
+### 4.5 Feed System
 
-Components:
-1. Consistency
-- Active days per week
-- Update frequency
-- Event streaks
+Structured progress updates — not social posts. Types: shipped feature, stage change, milestone reached, lesson learned.
 
-2. Execution
-- Product stage progression
-- Number of shipped features
-- Completed lifecycle transitions
+Feed behavior: prioritizes execution signals, not engagement-based ranking.
 
-3. Engagement Quality
-- Meaningful comments
-- Thread depth
-- Feedback received
+### 4.6 Opportunity Engine
 
-4. Outcome Signals
-- Hiring
-- Collaboration
-- Funding interest
+Converts reputation into real opportunities based on builder score, activity frequency, skills, and stage maturity.
 
-5. Social Proof
-- Followers
-- Reactions (low weight only)
+**Types:** Hiring matches, co-founder matches, startup collaboration, early funding interest.
 
-### 4.6 Build-in-Public System (Structured Feed)
-Concept:
-Not social posts; structured progress updates.
+### 4.7 Ranking System
 
-Schema:
-```sql
-updates (
-  id,
-  builder_id,
-  product_id,
-  content,
-  type,
-  created_at
-)
-```
+| Category | Criteria |
+|---|---|
+| Rising Builders | 7-day score growth |
+| Consistent Builders | 30-day stability |
+| Breakout Builders | Velocity spike |
+| Top Builders | Absolute score |
 
-Update Types:
-- shipped feature
-- stage change
-- milestone reached
-- lesson learned
+### 4.8 Collaborative Projects
 
-Feed Behavior:
-- Based on builder graph
-- Prioritizes execution signals
-- Not engagement-based ranking
+Multiple builders can work on a single product as a team. Roles: Owner, Maintainer, Contributor. All team members earn shared reputation from the product's execution.
 
-### 4.7 Opportunity Engine (MONETIZATION CORE)
-Concept:
-Convert reputation into real opportunities.
+---
 
-Signals:
-- Builder Score
-- Activity frequency
-- Skills graph
-- Stage maturity
+## 5. User Roles
 
-Opportunity Types:
-- Hiring matches
-- Co-founder matches
-- Startup collaboration
-- Early funding interest
+| Role | Selected | Can Change | Primary Actions |
+|---|---|---|---|
+| Builder | Onboarding | Once | Create products, post updates, earn reputation |
+| Investor | Onboarding | Once | Discover builders, express funding interest, manage watchlist |
+| Recruiter | Onboarding | Once | Search builders, post opportunities, manage hiring pipeline |
+| Admin | Assigned | N/A | Moderation, user management, score calibration |
 
-Schema:
-```sql
-opportunities (
-  id,
-  type,
-  builder_id,
-  metadata,
-  status,
-  created_at
-)
-```
+---
 
-### 4.8 Ranking System
-Replace "Trending Products" with:
-- Rising Builders (7-day growth)
-- Consistent Builders (30-day stability)
-- Breakout Builders (velocity spike)
-- Top Execution Builders
+## 6. Pages and UI Structure
 
-### 4.9 MCP Support (Ecosystem Access)
-Concept:
-Allow users, teams, and AI agents to connect directly to Zehunt through an MCP server.
+### Public Pages
+Home (builder-centric), Builder Discovery, Builder Profile, Products, Product Detail, Feed, Rankings, Search, Opportunities, Community Hub
 
-Goal:
-- Let external tools and AI assistants use Zehunt as a live builder intelligence source.
-- Enable authenticated read and write workflows without needing full UI interaction.
+### Authenticated Pages
+Role-based Dashboards (Builder/Investor/Recruiter), Create Product, Edit Product, Team Management, Post Update, Edit Profile, Notifications, Feedback
 
-Core MCP Capabilities:
-- Read builder profile, score, and activity timeline
-- Read rankings (rising, consistent, breakout)
-- Read feed updates and opportunity matches
-- Create structured builder updates
-- Submit lifecycle stage transitions with validation
+### Admin Pages (Separate Layout)
+Overview, User Management, Moderation Queue, Event Monitor, Score Calibration, Bug Reports, Ambassador Management, Newsletter
 
-Access Model:
-- Personal MCP connection via user account
-- Team MCP connection for organization workspaces (future)
-- Token scopes for least-privilege access (read-only, updates-write, admin)
+> See [Platform Screens](./platform-screens.md) for the complete route map with 38+ screens.
 
-Integrity and Safety:
-- Event schema validation before writes
-- Rate limiting and abuse detection on MCP endpoints
-- Full audit logs for MCP actions
-- Permission checks mapped to platform roles
+---
 
-## 5. Pages and UI Structure
+## 7. MVP Scope
 
-### 5.1 Home Page (Builder-Centric)
-- Rising Builders (primary)
-- Active builders feed
-- Build-in-public highlights
-
-Remove:
-- Product-first layout
-
-### 5.2 Builder Profile
-- Reputation score
-- Activity graph
-- Product timeline
-- Updates feed
-- Opportunities status
-
-### 5.3 Product Page (Secondary)
-- Product lifecycle
-- Builder history
-- Updates
-- Minimal voting
-
-### 5.4 Feed Page
-- Builder updates only
-- Structured progress posts
-
-### 5.5 Opportunities Page
-- Matches for builders
-- Hiring visibility
-- Collaboration suggestions
-
-### 5.6 Admin Panel
-- Moderation
-- Event monitoring
-- Score calibration
-
-## 6. MVP Scope (Corrected)
-
-### Phase 1 (Critical Foundation)
-- Builder profiles
-- Product creation
-- Builder event system
-- Basic lifecycle tracking
-- Builder score v1
+### Phase 1 — Critical Foundation (Beta)
+- Builder profiles with role selection
+- Product creation (solo and collaborative)
+- Builder event system (auto-emitted via triggers)
+- Basic lifecycle tracking (Idea → MVP → Beta → Growth)
+- Builder score v1 (5-component formula)
 - Build-in-public updates
+- Auth (GitHub + Google + email)
+- Community and ambassador program
+- Feedback and error reporting
 
-### Phase 2
-- Reputation ranking system
+### Phase 2 — Growth
+- Reputation ranking system with snapshots
 - Feed personalization
-- Rising builders leaderboard
 - Opportunity engine v1
+- Comments and reactions
+- Notifications with realtime
 - MCP server v1 (read-only tools)
 
-### Phase 3
+### Phase 3 — Scale
 - AI scoring refinement
 - Matchmaking system
-- Funding / hiring integrations
-- MCP write tools (updates + lifecycle transitions)
-- Team MCP access and scoped enterprise policies
+- Funding and hiring integrations
+- MCP write tools
+- Team MCP access and enterprise policies
 
-## 7. Growth Engine
+---
+
+## 8. Growth Engine
 
 ### Core Loop
-- Builder builds product
-- Logs progress
-- Reputation increases
-- Gets visibility and opportunities
-- More builders join
 
-### Viral Mechanism
+```
+Builder creates product → Logs progress → Reputation increases →
+Gets visibility and opportunities → More builders join
+```
+
+### Viral Mechanisms
 - "Built on Zehunt" badge
 - Public builder profile sharing
-- Activity timelines shareable
+- Shareable activity timelines
+- Ambassador program at universities
+- Newsletter with builder spotlights
 
-## 8. KPIs
+---
+
+## 9. KPIs
 
 ### Core Metrics
-- Weekly active builders
-- Builder retention (30-day)
-- Event creation rate
-- Opportunity conversion rate
-- MCP connected accounts
-- MCP tool call success rate
+
+| Metric | Description |
+|---|---|
+| Weekly active builders | Builders who posted at least 1 update |
+| Builder retention (30-day) | % of builders active after 30 days |
+| Event creation rate | Total events per day/week |
+| Opportunity conversion rate | % of matches that lead to action |
+| Ambassador onboards | Builders onboarded via ambassador referrals |
 
 ### Secondary Metrics
-- Average builder score growth
-- Updates per builder
-- Collaboration matches
-- MCP-generated updates as a share of total updates
 
-## 9. Monetization Strategy
+| Metric | Description |
+|---|---|
+| Average builder score growth | Week-over-week score increase |
+| Updates per builder | Average updates posted per active builder |
+| Collaboration matches | Team products created |
+| Newsletter engagement | Open rate, click rate |
 
-### Phase 1
-- Free platform
+---
 
-### Phase 2
-- Featured builders
-- Hiring access tools
-- Advanced analytics
+## 10. Monetization Strategy
 
-### Phase 3
-- Talent marketplace
-- Investor access layer
-- Enterprise recruitment APIs
+| Phase | Model |
+|---|---|
+| Phase 1 | Free platform |
+| Phase 2 | Featured builders, hiring access tools, advanced analytics |
+| Phase 3 | Talent marketplace, investor access layer, enterprise recruitment APIs |
 
-## 10. Security and Integrity
-- Anti-spam event validation
-- Rate limiting on updates
+---
+
+## 11. Security and Integrity
+
+- Row-level security on all database tables
+- Append-only event stream (immutable audit log)
+- Rate limiting on all write operations
+- Anti-spam content flagging and moderation queue
+- Role change limited to one time (prevents gaming)
 - Verified builder signals (future)
-- Event integrity checks
 
-## Final Positioning (Locked)
-Zehunt is a builder reputation and growth system that tracks execution over time and converts it into real-world opportunities.
+> See [Security Document](./security.md) for the complete security architecture.
+
+---
+
+<p align="center">
+  <sub>Zehunt is a builder reputation and growth system that tracks execution over time and converts it into real-world opportunities.</sub>
+</p>

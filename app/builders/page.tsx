@@ -8,8 +8,8 @@ import { builders } from '@/app/lib/platform-data';
 export default function BuildersPage() {
   return (
     <PlatformShell
-      title="Builder Reputation Graph"
-      subtitle="Zehunt tracks execution over time and ranks builders by measurable consistency, progression, and outcomes."
+      title="Builders"
+      subtitle="We track what builders accomplish and rank them by real progress."
     >
       <div className="mb-6 flex flex-wrap items-center gap-3">
         <StickyLabel>Rising Builders</StickyLabel>
@@ -67,9 +67,9 @@ export default function BuildersPage() {
             <TrendingUp className="h-5 w-5 text-[#2d5da1]" strokeWidth={2.8} />
           </span>
           <div>
-            <h3 className="text-2xl font-extrabold">Ranking Engine</h3>
+            <h3 className="text-2xl font-extrabold">How Rankings Work</h3>
             <p className="text-lg">
-              Top cards reflect growth velocity, consistency over time, and completed lifecycle transitions.
+              Top builders show consistent progress, real accomplishments, and steady growth over time.
             </p>
           </div>
         </div>

@@ -12,12 +12,12 @@ const typeIcon: Record<string, typeof Rocket> = {
 export default function FeedPage() {
   return (
     <PlatformShell
-      title="Build-in-Public Execution Feed"
-      subtitle="Every post is structured execution evidence that updates builder reputation over time."
+      title="Activity Feed"
+      subtitle="See what builders are working on. Real progress updates, not social posts."
     >
       <div className="mb-6 flex flex-wrap items-center gap-3">
-        <StickyLabel>Execution Signals Only</StickyLabel>
-        <RoughPill>No vanity ranking</RoughPill>
+        <StickyLabel>Real Work Only</StickyLabel>
+        <RoughPill>No popularity contests</RoughPill>
       </div>
 
       <div className="space-y-4">
